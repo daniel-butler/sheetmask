@@ -1,0 +1,32 @@
+[project]
+name = "excel-anonymizer"
+version = "0.1.0"
+description = "CLI for creating PII-safe Excel test fixtures"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+    "pyxlsb>=1.0.10",
+    "typer>=0.15.0",
+    "rich>=13.0.0",
+    "faker>=20.0.0",
+]
+
+[project.scripts]
+excel-anon = "excel_anonymizer.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-mock>=3.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = ["-v", "--tb=short"]
