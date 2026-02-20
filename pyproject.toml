@@ -2,7 +2,7 @@
 name = "excel-anonymizer"
 version = "0.1.0"
 description = "CLI for creating PII-safe Excel test fixtures"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
     "pandas>=2.0.0",
     "openpyxl>=3.1.0",
