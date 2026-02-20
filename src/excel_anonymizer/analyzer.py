@@ -78,7 +78,7 @@ Analyze the columns in this Excel file and recommend anonymization strategies.
         prompt += f"\n---\n\n## Sheet: {sheet_name}\n\n"
         prompt += f"**Rows**: {len(df):,} | **Columns**: {len(df.columns)}\n\n"
         prompt += "| Column Name | Data Type | Sample Values | Null % | Unique Count |\n"
-        prompt += "|-------------|-----------|---------------|--------|--------------||\n"
+        prompt += "|-------------|-----------|---------------|--------|--------------|\n"
 
         # Analyze each column
         for col in df.columns:

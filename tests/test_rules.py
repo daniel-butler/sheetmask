@@ -1,14 +1,17 @@
+import random
+
 import pandas as pd
 import pytest
 from excel_anonymizer.rules import PercentageVarianceRule, PreserveRelationshipRule
 
 
 def test_percentage_variance_changes_values():
+    random.seed(0)
     rule = PercentageVarianceRule(variance_pct=0.3)
     series = pd.Series([100.0, 200.0, 300.0])
     result = rule.apply(series, {})
-    assert len(result) == 3
-    assert not result.equals(series)
+    # Each value should shift by at least 1% (30% variance applied)
+    assert all(abs(result - series) >= 1.0)
 
 
 def test_percentage_variance_preserves_zero():

@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Dict
 
 from excel_anonymizer.entity_mapper import EntityMapper
-from excel_anonymizer.rules import NumericAnonymizationRule
+from excel_anonymizer.rules import NumericAnonymizationRule, PercentageVarianceRule, PreserveRelationshipRule
 
 
 class AnonymizationExecutor:
@@ -191,7 +191,6 @@ class AnonymizationExecutor:
         # Apply rules in dependency order
         # First: Apply PercentageVarianceRule (base values)
         # Second: Apply PreserveRelationshipRule (derived values)
-        from excel_anonymizer.rules import PercentageVarianceRule, PreserveRelationshipRule
 
         # Phase 1: Base values (PercentageVarianceRule)
         for col_name, rule in numeric_rules.items():
