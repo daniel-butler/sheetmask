@@ -87,3 +87,16 @@ def test_process_missing_config(sample_excel, tmp_path):
         "--config", str(tmp_path / "nonexistent.py"),
     ])
     assert result.exit_code != 0
+
+
+def test_process_config_missing_config_dict(sample_excel, tmp_path):
+    """Config file exists but does not define a 'config' dict."""
+    bad_config = tmp_path / "bad_config.py"
+    bad_config.write_text("# no config dict here\n")
+    result = runner.invoke(app, [
+        "process", str(sample_excel),
+        "--config", str(bad_config),
+    ])
+    assert result.exit_code != 0
+    assert "must define a 'config'" in result.output
+    assert "dict" in result.output

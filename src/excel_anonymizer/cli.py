@@ -10,6 +10,9 @@ import importlib.util
 import typer
 from pathlib import Path
 from rich.console import Console
+from excel_anonymizer.analyzer import analyze_excel_for_anonymization
+from excel_anonymizer.multi_analyzer import analyze_multiple_files
+from excel_anonymizer.executor import AnonymizationExecutor
 
 app = typer.Typer(
     name="excel-anon",
@@ -55,7 +58,6 @@ def analyze(
         3. Save the recommended config dict to config.py
         4. excel-anon process input.xlsx --config config.py
     """
-    from excel_anonymizer.analyzer import analyze_excel_for_anonymization
 
     try:
         console.print("[cyan]Analyzing Excel file...[/cyan]\n")
@@ -105,7 +107,6 @@ def analyze_multi(
     Useful for understanding how a report varies across months before
     writing an anonymization config.
     """
-    from excel_anonymizer.multi_analyzer import analyze_multiple_files
 
     try:
         if len(input_files) < 2:
@@ -173,7 +174,6 @@ def process(
         excel-anon process input.xlsx output.xlsx --config my_config.py
         excel-anon process input.xlsx --config config.py --seed 123
     """
-    from excel_anonymizer.executor import AnonymizationExecutor
 
     try:
         # Load config from Python file
@@ -204,8 +204,6 @@ def process(
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
-        import traceback
-        console.print(f"[red]{traceback.format_exc()}[/red]")
         raise typer.Exit(1)
 
 
