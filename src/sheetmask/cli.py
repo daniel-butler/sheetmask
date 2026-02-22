@@ -1,5 +1,5 @@
 """
-CLI for excel-anonymizer.
+CLI for sheetmaskymizer.
 
 Commands:
     analyze       - Analyze an Excel file, generate LLM prompt
@@ -15,7 +15,7 @@ from sheetmask.multi_analyzer import analyze_multiple_files
 from sheetmask.executor import AnonymizationExecutor
 
 app = typer.Typer(
-    name="excel-anon",
+    name="sheetmask",
     help="Create PII-safe Excel test fixtures",
     no_args_is_help=True,
 )
@@ -53,10 +53,10 @@ def analyze(
     Claude or ChatGPT to get anonymization config recommendations.
 
     Workflow:
-        1. excel-anon analyze input.xlsx
+        1. sheetmask analyze input.xlsx
         2. Copy the prompt into Claude or ChatGPT
         3. Save the recommended config dict to config.py
-        4. excel-anon process input.xlsx --config config.py
+        4. sheetmask process input.xlsx --config config.py
     """
 
     try:
@@ -71,13 +71,13 @@ def analyze(
             console.print("2. Copy the entire prompt")
             console.print("3. Paste into Claude or ChatGPT")
             console.print("4. Save the config dict to config.py")
-            console.print("5. Run: excel-anon process input.xlsx --config config.py\n")
+            console.print("5. Run: sheetmask process input.xlsx --config config.py\n")
         else:
             console.print(prompt)
             console.print("\n[bold cyan]Next steps:[/bold cyan]")
             console.print("1. Copy the prompt above into Claude or ChatGPT")
             console.print("2. Save the config dict to config.py")
-            console.print("3. Run: excel-anon process input.xlsx --config config.py\n")
+            console.print("3. Run: sheetmask process input.xlsx --config config.py\n")
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
@@ -166,13 +166,13 @@ def process(
     Anonymize an Excel file using a config file.
 
     The config file must be a Python file containing a 'config' dict.
-    Get a config by running 'excel-anon analyze' first, then pasting
+    Get a config by running 'sheetmask analyze' first, then pasting
     the prompt into Claude or ChatGPT.
 
     Examples:
-        excel-anon process input.xlsx --config my_config.py
-        excel-anon process input.xlsx output.xlsx --config my_config.py
-        excel-anon process input.xlsx --config config.py --seed 123
+        sheetmask process input.xlsx --config my_config.py
+        sheetmask process input.xlsx output.xlsx --config my_config.py
+        sheetmask process input.xlsx --config config.py --seed 123
     """
 
     try:
@@ -217,7 +217,7 @@ def _load_config(config_path: Path) -> dict:
     if not hasattr(module, "config"):
         raise ValueError(
             f"{config_path} must define a 'config' dict. "
-            "Run 'excel-anon analyze' to generate a starter config."
+            "Run 'sheetmask analyze' to generate a starter config."
         )
     return module.config
 

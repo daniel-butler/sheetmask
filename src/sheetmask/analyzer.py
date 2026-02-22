@@ -187,7 +187,7 @@ config = {{
 
 Then run:
 ```bash
-excel-anon process your_file.xlsx --config my_config.py
+sheetmask process your_file.xlsx --config my_config.py
 ```
 
 ## Important Notes
