@@ -100,8 +100,10 @@ class PreserveRelationshipRule(NumericAnonymizationRule):
         if missing:
             raise ValueError(f"Missing dependent columns: {missing}")
 
-        # Evaluate formula
-        result = eval(self.formula, {"__builtins__": {}}, {"context": context})  # pylint: disable=eval-used
+        # Evaluate formula (eval is intentional: user-supplied formula DSL)
+        result = eval(  # pylint: disable=eval-used
+            self.formula, {"__builtins__": {}}, {"context": context}
+        )
 
         # Convert to Series if needed
         if not isinstance(result, pd.Series):

@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 Excel column analyzer for generating LLM prompts.
 
