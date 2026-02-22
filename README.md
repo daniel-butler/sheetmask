@@ -1,15 +1,15 @@
-# excel-anon
+# sheetmask
 
 Turn a real Excel file into a safe test fixture — fake names, fake numbers, real structure.
 
 ## Install
 
 ```bash
-pip install git+https://github.com/daniel-butler/excel-anonymizer.git
+pip install git+https://github.com/daniel-butler/sheetmask.git
 ```
 
 ```bash
-uv add git+https://github.com/daniel-butler/excel-anonymizer.git
+uv add git+https://github.com/daniel-butler/sheetmask.git
 ```
 
 ## Quickstart
@@ -17,14 +17,14 @@ uv add git+https://github.com/daniel-butler/excel-anonymizer.git
 1. Run `analyze` on your file. It prints a prompt describing the columns and sample data — copy it.
 
 ```bash
-excel-anon analyze "Q4 Expense Report.xlsx"
+sheetmask analyze "Q4 Expense Report.xlsx"
 ```
 
 2. Paste the prompt into Claude or ChatGPT. Save the config it returns:
 
 ```python
 # q4_expense_config.py
-from excel_anonymizer import PercentageVarianceRule, PreserveRelationshipRule
+from sheetmask import PercentageVarianceRule, PreserveRelationshipRule
 
 config = {
     "version": "1.0.0",
@@ -48,7 +48,7 @@ config = {
 3. Run `process`. The output lands beside the original.
 
 ```bash
-excel-anon process "Q4 Expense Report.xlsx" --config q4_expense_config.py
+sheetmask process "Q4 Expense Report.xlsx" --config q4_expense_config.py
 # Output: Q4 Expense Report_SYNTHETIC.xlsx
 ```
 
@@ -92,8 +92,8 @@ Each unique value maps to the same fake value throughout the file, so relationsh
 
 | Command | Description |
 |---------|-------------|
-| `excel-anon analyze <file>` | Analyze file and print LLM prompt |
-| `excel-anon analyze <file> -o prompt.txt` | Save LLM prompt to a file |
-| `excel-anon analyze-multi f1 f2 f3` | Analyze multiple files for shared schema patterns |
-| `excel-anon process <file> --config config.py` | Anonymize file using config |
-| `excel-anon process <file> out.xlsx --config config.py --seed 42` | Write to named output with fixed random seed |
+| `sheetmask analyze <file>` | Analyze file and print LLM prompt |
+| `sheetmask analyze <file> -o prompt.txt` | Save LLM prompt to a file |
+| `sheetmask analyze-multi f1 f2 f3` | Analyze multiple files for shared schema patterns |
+| `sheetmask process <file> --config config.py` | Anonymize file using config |
+| `sheetmask process <file> out.xlsx --config config.py --seed 42` | Write to named output with fixed random seed |
