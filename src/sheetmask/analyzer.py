@@ -4,6 +4,7 @@ Excel column analyzer for generating LLM prompts.
 This tool analyzes Excel files and generates prompts that can be pasted
 into Claude/GPT to get anonymization config recommendations.
 """
+
 import pandas as pd
 from pathlib import Path
 from rich.console import Console
@@ -34,10 +35,14 @@ def analyze_excel_for_anonymization(
 
     if sheet_name:
         # Analyze single sheet
-        sheets_to_analyze = {sheet_name: pd.read_excel(input_path, sheet_name=sheet_name)}
+        sheets_to_analyze = {
+            sheet_name: pd.read_excel(input_path, sheet_name=sheet_name)
+        }
     else:
         # Analyze ALL sheets
-        sheets_to_analyze = {name: pd.read_excel(input_path, sheet_name=name) for name in xls.sheet_names}
+        sheets_to_analyze = {
+            name: pd.read_excel(input_path, sheet_name=name) for name in xls.sheet_names
+        }
 
     # Parse date from filename
     date_result = parse_date_from_filename(input_path.name)
@@ -77,8 +82,12 @@ Analyze the columns in this Excel file and recommend anonymization strategies.
     for sheet_name, df in sheets_to_analyze.items():
         prompt += f"\n---\n\n## Sheet: {sheet_name}\n\n"
         prompt += f"**Rows**: {len(df):,} | **Columns**: {len(df.columns)}\n\n"
-        prompt += "| Column Name | Data Type | Sample Values | Null % | Unique Count |\n"
-        prompt += "|-------------|-----------|---------------|--------|--------------|\n"
+        prompt += (
+            "| Column Name | Data Type | Sample Values | Null % | Unique Count |\n"
+        )
+        prompt += (
+            "|-------------|-----------|---------------|--------|--------------|\n"
+        )
 
         # Analyze each column
         for col in df.columns:
@@ -95,7 +104,11 @@ Analyze the columns in this Excel file and recommend anonymization strategies.
             prompt += f"| {col} | {dtype} | {sample_str} | {null_pct:.1f}% | {unique_count} |\n"
 
     sheet_list = list(sheets_to_analyze.keys())
-    sheets_example = f'["{sheet_list[0]}"]' if len(sheet_list) == 1 else f'["{sheet_list[0]}", "{sheet_list[1] if len(sheet_list) > 1 else sheet_list[0]}"]'
+    sheets_example = (
+        f'["{sheet_list[0]}"]'
+        if len(sheet_list) == 1
+        else f'["{sheet_list[0]}", "{sheet_list[1] if len(sheet_list) > 1 else sheet_list[0]}"]'
+    )
 
     prompt += f"""
 

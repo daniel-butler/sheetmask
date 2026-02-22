@@ -25,7 +25,7 @@ class DateParseResult:
 
     date: Optional[date]
     confidence: str  # "High", "Medium", "Low", "None"
-    pattern: str     # Description of pattern matched
+    pattern: str  # Description of pattern matched
     original_text: Optional[str] = None  # The text that was matched
 
 
@@ -88,14 +88,14 @@ def parse_date_from_filename(filename: str) -> DateParseResult:
         date=None,
         confidence="None",
         pattern="No date found in filename",
-        original_text=None
+        original_text=None,
     )
 
 
 def _try_month_dash_year_short(filename: str) -> Optional[DateParseResult]:
     """Try Month-YY format (Dec-24, Nov-24)"""
     # Pattern: 3-letter month abbreviation followed by -YY
-    pattern = r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2})\b'
+    pattern = r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2})\b"
     match = re.search(pattern, filename, re.IGNORECASE)
 
     if match:
@@ -107,9 +107,18 @@ def _try_month_dash_year_short(filename: str) -> Optional[DateParseResult]:
 
         # Month name to number
         month_map = {
-            "Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4,
-            "May": 5, "Jun": 6, "Jul": 7, "Aug": 8,
-            "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12
+            "Jan": 1,
+            "Feb": 2,
+            "Mar": 3,
+            "Apr": 4,
+            "May": 5,
+            "Jun": 6,
+            "Jul": 7,
+            "Aug": 8,
+            "Sep": 9,
+            "Oct": 10,
+            "Nov": 11,
+            "Dec": 12,
         }
         month = month_map[month_abbr]
 
@@ -117,7 +126,7 @@ def _try_month_dash_year_short(filename: str) -> Optional[DateParseResult]:
             date=date(year, month, 1),  # First of month
             confidence="High",
             pattern="Month-YY",
-            original_text=match.group(0)
+            original_text=match.group(0),
         )
 
     return None
@@ -129,7 +138,7 @@ def _try_year_month_dash(filename: str) -> Optional[DateParseResult]:
     # Use negative lookaround instead of \b so that underscore-delimited dates
     # (e.g. "report_2024-03.xlsx") are matched. \b treats _ as a word character
     # and would fail between '_' and '2'.
-    pattern1 = r'(?<![a-zA-Z0-9])(20\d{2})-(0[1-9]|1[0-2])(?![a-zA-Z0-9])'
+    pattern1 = r"(?<![a-zA-Z0-9])(20\d{2})-(0[1-9]|1[0-2])(?![a-zA-Z0-9])"
     match = re.search(pattern1, filename)
 
     if match:
@@ -140,11 +149,11 @@ def _try_year_month_dash(filename: str) -> Optional[DateParseResult]:
             date=date(year, month, 1),
             confidence="High",
             pattern="YYYY-MM",
-            original_text=match.group(0)
+            original_text=match.group(0),
         )
 
     # Try MM-YYYY
-    pattern2 = r'(?<![a-zA-Z0-9])(0[1-9]|1[0-2])-(20\d{2})(?![a-zA-Z0-9])'
+    pattern2 = r"(?<![a-zA-Z0-9])(0[1-9]|1[0-2])-(20\d{2})(?![a-zA-Z0-9])"
     match = re.search(pattern2, filename)
 
     if match:
@@ -155,7 +164,7 @@ def _try_year_month_dash(filename: str) -> Optional[DateParseResult]:
             date=date(year, month, 1),
             confidence="High",
             pattern="MM-YYYY",
-            original_text=match.group(0)
+            original_text=match.group(0),
         )
 
     return None
@@ -164,14 +173,23 @@ def _try_year_month_dash(filename: str) -> Optional[DateParseResult]:
 def _try_full_month_name(filename: str) -> Optional[DateParseResult]:
     """Try full month name (December 2024, 2024 December)"""
     months = {
-        "january": 1, "february": 2, "march": 3, "april": 4,
-        "may": 5, "june": 6, "july": 7, "august": 8,
-        "september": 9, "october": 10, "november": 11, "december": 12
+        "january": 1,
+        "february": 2,
+        "march": 3,
+        "april": 4,
+        "may": 5,
+        "june": 6,
+        "july": 7,
+        "august": 8,
+        "september": 9,
+        "october": 10,
+        "november": 11,
+        "december": 12,
     }
 
     # Try "Month YYYY"
     for month_name, month_num in months.items():
-        pattern = rf'\b{month_name}\s+(20\d{{2}})\b'
+        pattern = rf"\b{month_name}\s+(20\d{{2}})\b"
         match = re.search(pattern, filename, re.IGNORECASE)
         if match:
             year = int(match.group(1))
@@ -179,12 +197,12 @@ def _try_full_month_name(filename: str) -> Optional[DateParseResult]:
                 date=date(year, month_num, 1),
                 confidence="High",
                 pattern="Full Month YYYY",
-                original_text=match.group(0)
+                original_text=match.group(0),
             )
 
     # Try "YYYY Month"
     for month_name, month_num in months.items():
-        pattern = rf'\b(20\d{{2}})\s+{month_name}\b'
+        pattern = rf"\b(20\d{{2}})\s+{month_name}\b"
         match = re.search(pattern, filename, re.IGNORECASE)
         if match:
             year = int(match.group(1))
@@ -192,7 +210,7 @@ def _try_full_month_name(filename: str) -> Optional[DateParseResult]:
                 date=date(year, month_num, 1),
                 confidence="High",
                 pattern="YYYY Full Month",
-                original_text=match.group(0)
+                original_text=match.group(0),
             )
 
     return None
@@ -210,7 +228,7 @@ def _try_quarter(filename: str) -> Optional[DateParseResult]:
     """
     # Pattern: Q1, Q2, Q3, Q4 with optional year
     # Try YYYY-Q# first
-    pattern1 = r'\b(20\d{2})-Q([1-4])\b'
+    pattern1 = r"\b(20\d{2})-Q([1-4])\b"
     match = re.search(pattern1, filename, re.IGNORECASE)
 
     if match:
@@ -225,11 +243,11 @@ def _try_quarter(filename: str) -> Optional[DateParseResult]:
             date=date(year, month, 1),
             confidence="High",
             pattern="YYYY-Q#",
-            original_text=match.group(0)
+            original_text=match.group(0),
         )
 
     # Try Q#-YYYY
-    pattern2 = r'\bQ([1-4])-(20\d{2})\b'
+    pattern2 = r"\bQ([1-4])-(20\d{2})\b"
     match = re.search(pattern2, filename, re.IGNORECASE)
 
     if match:
@@ -243,7 +261,7 @@ def _try_quarter(filename: str) -> Optional[DateParseResult]:
             date=date(year, month, 1),
             confidence="Medium",
             pattern="Q#-YYYY",
-            original_text=match.group(0)
+            original_text=match.group(0),
         )
 
     return None
@@ -252,13 +270,15 @@ def _try_quarter(filename: str) -> Optional[DateParseResult]:
 def _try_yyyymmdd(filename: str) -> Optional[DateParseResult]:
     """Try YYYYMMDD format (20241201)"""
     # Allow word boundaries or underscores around the date
-    pattern = r'(?:^|[_\s])(20\d{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])(?:[_\s]|$|\.)'
+    pattern = (
+        r"(?:^|[_\s])(20\d{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])(?:[_\s]|$|\.)"
+    )
     match = re.search(pattern, filename)
 
     if match:
         year = int(match.group(1))
         month = int(match.group(2))
-        day = int(match.group(3))
+        _ = int(match.group(3))
 
         try:
             # Use day 1 always (per requirements)
@@ -267,7 +287,7 @@ def _try_yyyymmdd(filename: str) -> Optional[DateParseResult]:
                 date=parsed_date,
                 confidence="High",
                 pattern="YYYYMMDD",
-                original_text=match.group(0)
+                original_text=match.group(0),
             )
         except ValueError:
             # Invalid date (e.g., Feb 31)
@@ -283,7 +303,7 @@ def _try_slash_or_dash_date(filename: str) -> Optional[DateParseResult]:
     Returns medium/low confidence since format is ambiguous.
     """
     # Pattern: ##-##-#### or ##/##/####
-    pattern = r'\b(\d{1,2})[-/](\d{1,2})[-/](20\d{2})\b'
+    pattern = r"\b(\d{1,2})[-/](\d{1,2})[-/](20\d{2})\b"
     match = re.search(pattern, filename)
 
     if match:
@@ -308,7 +328,7 @@ def _try_slash_or_dash_date(filename: str) -> Optional[DateParseResult]:
                 date=date(year, month, 1),  # Use first of month
                 confidence=confidence,
                 pattern="MM-DD-YYYY or DD-MM-YYYY (ambiguous)",
-                original_text=match.group(0)
+                original_text=match.group(0),
             )
         except ValueError:
             return None
@@ -318,7 +338,7 @@ def _try_slash_or_dash_date(filename: str) -> Optional[DateParseResult]:
 
 def _try_year_only(filename: str) -> Optional[DateParseResult]:
     """Try year-only format (2024) - returns Jan 1"""
-    pattern = r'\b(20\d{2})\b'
+    pattern = r"\b(20\d{2})\b"
     match = re.search(pattern, filename)
 
     if match:
@@ -328,7 +348,7 @@ def _try_year_only(filename: str) -> Optional[DateParseResult]:
             date=date(year, 1, 1),  # Jan 1 of that year
             confidence="Low",
             pattern="Year only",
-            original_text=match.group(0)
+            original_text=match.group(0),
         )
 
     return None

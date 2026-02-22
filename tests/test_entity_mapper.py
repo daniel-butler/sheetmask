@@ -26,9 +26,15 @@ def test_seed_produces_reproducible_output():
 def test_all_entity_types_generate_without_error():
     mapper = EntityMapper(seed=42)
     types = [
-        "PERSON", "PERSON_FIRST_NAME", "PERSON_LAST_NAME",
-        "ORGANIZATION", "EMAIL_ADDRESS", "PHONE_NUMBER",
-        "PROJECT_NAME", "PROJECT_DESCRIPTION", "LOCATION",
+        "PERSON",
+        "PERSON_FIRST_NAME",
+        "PERSON_LAST_NAME",
+        "ORGANIZATION",
+        "EMAIL_ADDRESS",
+        "PHONE_NUMBER",
+        "PROJECT_NAME",
+        "PROJECT_DESCRIPTION",
+        "LOCATION",
     ]
     for t in types:
         result = mapper.get_or_create(t, "test_value")

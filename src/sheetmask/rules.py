@@ -4,9 +4,9 @@ Numeric anonymization rules for domain-aware data anonymization.
 These rules preserve statistical properties and business constraints
 while anonymizing numeric data.
 """
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-import random
 import random as stdlib_random
 import pandas as pd
 
@@ -27,7 +27,6 @@ class NumericAnonymizationRule(ABC):
         Returns:
             Anonymized series
         """
-        pass
 
 
 @dataclass
@@ -42,12 +41,13 @@ class PercentageVarianceRule(NumericAnonymizationRule):
         # Original: [100, 200, 300]
         # Anonymized: [87, 234, 281] (varies by ±30%, preserves distribution shape)
     """
+
     variance_pct: float = 0.3  # ±30% default
     rng: stdlib_random.Random | None = field(default=None, compare=False)
 
     def apply(self, series: pd.Series, context: dict[str, pd.Series]) -> pd.Series:
         """Add random noise ±variance_pct to each value"""
-        _rng = self.rng if self.rng is not None else random
+        _rng = self.rng if self.rng is not None else stdlib_random
 
         def add_noise(value):
             if pd.isna(value):
@@ -88,6 +88,7 @@ class PreserveRelationshipRule(NumericAnonymizationRule):
         # After anonymizing Revenue and Expense, GM is recomputed
         anonymized_gm = rule.apply(df["GM"], context)
     """
+
     formula: str  # Python expression using context dict
     dependent_columns: list[str]
 
@@ -100,7 +101,7 @@ class PreserveRelationshipRule(NumericAnonymizationRule):
             raise ValueError(f"Missing dependent columns: {missing}")
 
         # Evaluate formula
-        result = eval(self.formula, {"__builtins__": {}}, {"context": context})
+        result = eval(self.formula, {"__builtins__": {}}, {"context": context})  # pylint: disable=eval-used
 
         # Convert to Series if needed
         if not isinstance(result, pd.Series):

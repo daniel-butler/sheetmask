@@ -31,6 +31,24 @@ source = "vcs"
 dev = [
     "pytest>=8.0.0",
     "pytest-mock>=3.0.0",
+    "black>=24.0.0",
+    "pylint>=3.0.0",
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint."messages control"]
+disable = [
+    "missing-module-docstring",
+    "too-many-locals",
+    "too-many-branches",
+    "too-many-statements",
+    "too-many-return-statements",
+    "no-else-return",
+    "wrong-import-order",
+    "unused-argument",
+    "redefined-argument-from-local",
 ]
 
 [tool.pytest.ini_options]

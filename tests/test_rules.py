@@ -61,6 +61,7 @@ def test_preserve_relationship_raises_on_missing_column():
 
 def test_percentage_variance_is_reproducible_with_seed():
     import random as stdlib_random
+
     rng = stdlib_random.Random(42)
     rule = PercentageVarianceRule(variance_pct=0.3, rng=rng)
     series = pd.Series([100.0, 200.0, 300.0])

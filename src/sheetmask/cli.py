@@ -6,6 +6,7 @@ Commands:
     analyze-multi - Analyze multiple Excel files for schema patterns
     process       - Anonymize an Excel file using a config file
 """
+
 import importlib.util
 import typer
 from pathlib import Path
@@ -110,7 +111,8 @@ def analyze_multi(
 
     try:
         if len(input_files) < 2:
-            console.print("[yellow]Warning: Only 1 file provided. Works best with 2+ files.[/yellow]\n")
+            msg = "[yellow]Warning: Only 1 file provided. Works best with 2+ files.[/yellow]"
+            console.print(msg + "\n")
 
         console.print(f"[cyan]Analyzing {len(input_files)} files...[/cyan]\n")
         prompt = analyze_multiple_files(input_files)

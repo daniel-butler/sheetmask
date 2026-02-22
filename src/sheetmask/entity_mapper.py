@@ -4,6 +4,7 @@ Global entity mapper for consistent anonymization.
 Ensures that the same entity value (e.g., "Acme Corp") always maps to the
 same fake value (e.g., "FakeCo Industries") across all columns and sheets.
 """
+
 from typing import Dict
 from faker import Faker
 
@@ -56,7 +57,9 @@ class EntityMapper:
             self.mappings[entity_type] = {}
 
         if original_value not in self.mappings[entity_type]:
-            self.mappings[entity_type][original_value] = self._generate_fake(entity_type)
+            self.mappings[entity_type][original_value] = self._generate_fake(
+                entity_type
+            )
 
         return self.mappings[entity_type][original_value]
 

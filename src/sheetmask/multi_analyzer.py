@@ -30,13 +30,15 @@ def analyze_multiple_files(file_paths: List[Path]) -> str:
     file_info = []
     for path in file_paths:
         date_result = parse_date_from_filename(path.name)
-        file_info.append({
-            "path": path,
-            "name": path.name,
-            "date": date_result.date,
-            "date_confidence": date_result.confidence,
-            "date_pattern": date_result.pattern,
-        })
+        file_info.append(
+            {
+                "path": path,
+                "name": path.name,
+                "date": date_result.date,
+                "date_confidence": date_result.confidence,
+                "date_pattern": date_result.pattern,
+            }
+        )
 
     # Sort by date (None dates go to end)
     file_info.sort(key=lambda x: (x["date"] is None, x["date"]))
@@ -69,11 +71,13 @@ def compare_schemas(file_paths: List[Path]) -> dict:
     file_schemas = []
     for path in file_paths:
         df = pd.read_excel(path)
-        file_schemas.append({
-            "path": path,
-            "columns": set(df.columns),
-            "dtypes": {col: str(dtype) for col, dtype in df.dtypes.items()},
-        })
+        file_schemas.append(
+            {
+                "path": path,
+                "columns": set(df.columns),
+                "dtypes": {col: str(dtype) for col, dtype in df.dtypes.items()},
+            }
+        )
 
     # Find stable columns (in all files)
     all_columns = set.intersection(*[s["columns"] for s in file_schemas])
@@ -108,11 +112,13 @@ def compare_data_patterns(file_paths: List[Path]) -> dict:
     - type_consistent: Boolean if types are consistent
     - unique_count_range: (min, max) unique value counts
     """
-    patterns = defaultdict(lambda: {
-        "null_pcts": [],
-        "types": set(),
-        "unique_counts": [],
-    })
+    patterns = defaultdict(
+        lambda: {
+            "null_pcts": [],
+            "types": set(),
+            "unique_counts": [],
+        }
+    )
 
     # Analyze each file
     for path in file_paths:
@@ -135,13 +141,19 @@ def compare_data_patterns(file_paths: List[Path]) -> dict:
             "null_pct_range": (min(null_pcts), max(null_pcts)) if null_pcts else (0, 0),
             "types": data["types"],
             "type_consistent": len(data["types"]) == 1,
-            "unique_count_range": (min(data["unique_counts"]), max(data["unique_counts"])) if data["unique_counts"] else (0, 0),
+            "unique_count_range": (
+                (min(data["unique_counts"]), max(data["unique_counts"]))
+                if data["unique_counts"]
+                else (0, 0)
+            ),
         }
 
     return result
 
 
-def _build_multi_month_prompt(file_info: List[dict], schema_comparison: dict, data_patterns: dict) -> str:
+def _build_multi_month_prompt(
+    file_info: List[dict], schema_comparison: dict, data_patterns: dict
+) -> str:
     """Build the comprehensive multi-month analysis prompt"""
 
     prompt = """# Multi-Month Excel Analysis for Anonymization
@@ -161,7 +173,9 @@ Analyze multiple Excel files across time periods to identify:
     for i, info in enumerate(file_info, 1):
         date_str = info["date"].strftime("%Y-%m-%d") if info["date"] else "Unknown"
         prompt += f"{i}. **{info['name']}**\n"
-        prompt += f"   - Parsed Date: {date_str} (Confidence: {info['date_confidence']})\n"
+        prompt += (
+            f"   - Parsed Date: {date_str} (Confidence: {info['date_confidence']})\n"
+        )
         prompt += f"   - Pattern: {info['date_pattern']}\n\n"
 
     # Filename pattern analysis
@@ -176,7 +190,9 @@ Analyze multiple Excel files across time periods to identify:
         prompt += f"- **Detected Pattern**: {patterns[0]}\n"
         prompt += f"- **Date Parsing**: {len([p for p in patterns if 'No date' not in p])}/{len(patterns)} successful\n"
         prompt += "- **Consistency**: High (all files follow same pattern)\n"
-        prompt += "- **Recommendation**: This pattern is reliable for date extraction\n\n"
+        prompt += (
+            "- **Recommendation**: This pattern is reliable for date extraction\n\n"
+        )
     else:
         prompt += "- **Consistency**: Low (multiple patterns detected)\n"
         prompt += "- **Patterns Found**:\n"
@@ -207,7 +223,9 @@ Analyze multiple Excel files across time periods to identify:
             if null_range[0] == null_range[1]:
                 prompt += f"  - Null: {null_range[0]:.1f}%\n"
             else:
-                prompt += f"  - Null range: {null_range[0]:.1f}% - {null_range[1]:.1f}%\n"
+                prompt += (
+                    f"  - Null range: {null_range[0]:.1f}% - {null_range[1]:.1f}%\n"
+                )
 
             if not type_consistent:
                 types_str = ", ".join(pattern.get("types", set()))
@@ -244,7 +262,8 @@ Based on multi-month stability analysis:
 
     # Find columns with 0% null in all files
     not_null_candidates = [
-        col for col in stable_cols
+        col
+        for col in stable_cols
         if data_patterns.get(col, {}).get("null_pct_range", (100, 100))[1] == 0
     ]
 
@@ -258,7 +277,8 @@ Based on multi-month stability analysis:
 
     # Flag always-null columns
     always_null_cols = [
-        col for col in stable_cols
+        col
+        for col in stable_cols
         if data_patterns.get(col, {}).get("null_pct_range", (0, 0))[0] == 100
     ]
 
@@ -281,7 +301,8 @@ The following columns are 100% null in ALL files (candidates for removal):
 
     # Find type inconsistencies
     type_issues = [
-        (col, pattern) for col, pattern in data_patterns.items()
+        (col, pattern)
+        for col, pattern in data_patterns.items()
         if not pattern.get("type_consistent", True) and col in stable_cols
     ]
 
@@ -293,8 +314,10 @@ The following columns are 100% null in ALL files (candidates for removal):
 
     # Find null percentage changes
     null_variance = [
-        (col, pattern) for col, pattern in data_patterns.items()
-        if col in stable_cols and abs(pattern["null_pct_range"][1] - pattern["null_pct_range"][0]) > 30
+        (col, pattern)
+        for col, pattern in data_patterns.items()
+        if col in stable_cols
+        and abs(pattern["null_pct_range"][1] - pattern["null_pct_range"][0]) > 30
     ]
 
     if null_variance:
