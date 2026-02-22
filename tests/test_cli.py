@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 from typer.testing import CliRunner
-from excel_anonymizer.cli import app
+from sheetmask.cli import app
 
 
 runner = CliRunner()
@@ -24,7 +24,7 @@ def sample_excel(tmp_path):
 def sample_config(tmp_path):
     """Create a minimal config.py for testing."""
     config_content = """\
-from excel_anonymizer import PercentageVarianceRule
+from sheetmask import PercentageVarianceRule
 
 config = {
     "version": "1.0.0",

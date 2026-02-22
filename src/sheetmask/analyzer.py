@@ -8,7 +8,7 @@ import pandas as pd
 from pathlib import Path
 from rich.console import Console
 
-from excel_anonymizer.filename_parser import parse_date_from_filename
+from sheetmask.filename_parser import parse_date_from_filename
 
 console = Console()
 
@@ -121,7 +121,7 @@ sheets_to_discard: ["Sheet3", "Sheet4"]  # Explain why for each
 ### 2. Entity Type Analysis
 For each sheet you're keeping, identify columns with entities.
 
-**Supported entity types** (see `excel_anonymizer/entity_mapper.py`):
+**Supported entity types** (see `sheetmask/entity_mapper.py`):
 - **PERSON**: Full names (e.g., "John Doe")
 - **PERSON_FIRST_NAME**: First names only (e.g., "John")
 - **PERSON_LAST_NAME**: Last names only (e.g., "Doe")
@@ -162,7 +162,7 @@ Which columns should NOT be anonymized?
 Save the recommended config as a Python file (e.g., `my_config.py`):
 
 ```python
-from excel_anonymizer import PercentageVarianceRule, PreserveRelationshipRule
+from sheetmask import PercentageVarianceRule, PreserveRelationshipRule
 
 config = {{
     "version": "1.0.0",

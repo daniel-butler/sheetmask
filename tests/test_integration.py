@@ -7,8 +7,8 @@ multi-sheet Excel files to catch issues that unit tests miss.
 import pandas as pd
 from pathlib import Path
 from typer.testing import CliRunner
-from excel_anonymizer.cli import app
-from excel_anonymizer.executor import AnonymizationExecutor
+from sheetmask.cli import app
+from sheetmask.executor import AnonymizationExecutor
 
 runner = CliRunner()
 
@@ -302,21 +302,21 @@ class TestTeamRoster:
 
 class TestMultiAnalyzer:
     def test_analyze_two_files_returns_prompt(self):
-        from excel_anonymizer.multi_analyzer import analyze_multiple_files
+        from sheetmask.multi_analyzer import analyze_multiple_files
         result = analyze_multiple_files([REVENUE_REPORT, TEAM_ROSTER])
         assert isinstance(result, str)
         assert "Multi-Month Excel Analysis" in result
         assert "Schema Stability Report" in result
 
     def test_stable_columns_detected(self):
-        from excel_anonymizer.multi_analyzer import compare_schemas
+        from sheetmask.multi_analyzer import compare_schemas
         # Revenue report has consistent sheets; use same file twice to guarantee stable columns
         result = compare_schemas([REVENUE_REPORT, REVENUE_REPORT])
         assert len(result["stable_columns"]) > 0
         assert result["total_files"] == 2
 
     def test_data_patterns_computed(self):
-        from excel_anonymizer.multi_analyzer import compare_data_patterns
+        from sheetmask.multi_analyzer import compare_data_patterns
         result = compare_data_patterns([REVENUE_REPORT, REVENUE_REPORT])
         assert len(result) > 0
         for col, stats in result.items():
@@ -338,34 +338,34 @@ class TestDateFormats:
     """Cover all date formats supported by filename_parser."""
 
     def test_quarter_with_year_prefix(self):
-        from excel_anonymizer.filename_parser import parse_date_from_filename
+        from sheetmask.filename_parser import parse_date_from_filename
         from datetime import date
         result = parse_date_from_filename("2024-Q3 Report.xlsx")
         assert result.date == date(2024, 7, 1)
         assert result.confidence == "High"
 
     def test_quarter_only(self):
-        from excel_anonymizer.filename_parser import parse_date_from_filename
+        from sheetmask.filename_parser import parse_date_from_filename
         from datetime import date
         result = parse_date_from_filename("Q4-2024 Summary.xlsx")
         assert result.date == date(2024, 10, 1)
 
     def test_yyyymmdd(self):
-        from excel_anonymizer.filename_parser import parse_date_from_filename
+        from sheetmask.filename_parser import parse_date_from_filename
         from datetime import date
         result = parse_date_from_filename("report_20241201.xlsx")
         assert result.date == date(2024, 12, 1)
         assert result.confidence == "High"
 
     def test_year_only(self):
-        from excel_anonymizer.filename_parser import parse_date_from_filename
+        from sheetmask.filename_parser import parse_date_from_filename
         from datetime import date
         result = parse_date_from_filename("Annual Report 2024.xlsx")
         assert result.date == date(2024, 1, 1)
         assert result.confidence == "Low"
 
     def test_fixture_filenames_parsed_correctly(self):
-        from excel_anonymizer.filename_parser import parse_date_from_filename
+        from sheetmask.filename_parser import parse_date_from_filename
         from datetime import date
         r1 = parse_date_from_filename("Dec-24 Revenue Report.xlsx")
         assert r1.date == date(2024, 12, 1)

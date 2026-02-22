@@ -1,4 +1,4 @@
-from excel_anonymizer.entity_mapper import EntityMapper
+from sheetmask.entity_mapper import EntityMapper
 
 
 def test_same_entity_maps_to_same_fake():

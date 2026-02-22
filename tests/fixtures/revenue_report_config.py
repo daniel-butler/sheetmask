@@ -1,4 +1,4 @@
-from excel_anonymizer import PercentageVarianceRule, PreserveRelationshipRule
+from sheetmask import PercentageVarianceRule, PreserveRelationshipRule
 
 config = {
     "version": "1.0.0",

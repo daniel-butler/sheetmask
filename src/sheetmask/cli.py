@@ -10,9 +10,9 @@ import importlib.util
 import typer
 from pathlib import Path
 from rich.console import Console
-from excel_anonymizer.analyzer import analyze_excel_for_anonymization
-from excel_anonymizer.multi_analyzer import analyze_multiple_files
-from excel_anonymizer.executor import AnonymizationExecutor
+from sheetmask.analyzer import analyze_excel_for_anonymization
+from sheetmask.multi_analyzer import analyze_multiple_files
+from sheetmask.executor import AnonymizationExecutor
 
 app = typer.Typer(
     name="excel-anon",

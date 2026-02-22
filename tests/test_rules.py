@@ -2,7 +2,7 @@ import random
 
 import pandas as pd
 import pytest
-from excel_anonymizer.rules import PercentageVarianceRule, PreserveRelationshipRule
+from sheetmask.rules import PercentageVarianceRule, PreserveRelationshipRule
 
 
 def test_percentage_variance_changes_values():

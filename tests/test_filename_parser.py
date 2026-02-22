@@ -1,5 +1,5 @@
 from datetime import date
-from excel_anonymizer.filename_parser import parse_date_from_filename
+from sheetmask.filename_parser import parse_date_from_filename
 
 
 def test_parses_month_dash_year_short():

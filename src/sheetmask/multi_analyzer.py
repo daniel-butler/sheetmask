@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import List
 from collections import defaultdict
 
-from excel_anonymizer.filename_parser import parse_date_from_filename
+from sheetmask.filename_parser import parse_date_from_filename
 
 
 def analyze_multiple_files(file_paths: List[Path]) -> str:

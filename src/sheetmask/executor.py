@@ -16,8 +16,8 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict
 
-from excel_anonymizer.entity_mapper import EntityMapper
-from excel_anonymizer.rules import NumericAnonymizationRule, PercentageVarianceRule, PreserveRelationshipRule
+from sheetmask.entity_mapper import EntityMapper
+from sheetmask.rules import NumericAnonymizationRule, PercentageVarianceRule, PreserveRelationshipRule
 
 
 class AnonymizationExecutor:
